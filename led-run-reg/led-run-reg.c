@@ -35,7 +35,7 @@ int main() {
 		// set the first bit to '1' to light the led
 		*(portRegister) = 1;
 		
-		// shift the bit along the register to light each of hte pins in turn
+		// shift the bit along the register to light each of the pins in turn
 		for(i = 0; i < 8; ++i) {
 			delay_ms(100);
 			*(portRegister) <<= 1;
