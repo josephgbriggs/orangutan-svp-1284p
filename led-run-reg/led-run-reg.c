@@ -23,22 +23,20 @@
  */
 
 int main() { 
-	//volatile unsigned char* pinRegister = (unsigned char*)&PINA;
-	volatile unsigned char* portRegister = (unsigned char*)&PORTA;
-	volatile unsigned char* ddrRegister = (unsigned char*)&DDRA;
+
 	int i;
 	
 	// set data direction to 'out' for all bits in this register
-	*(ddrRegister) |= 0xFF;
+	DDRA |= 0xFF;
 	
 	while(1) { 
-		// set the first bit to '1' to light the led
-		*(portRegister) = 1;
+		// set the first bit to '1' to light the first
+		PORTA = 1;
 		
 		// shift the bit along the register to light each of the pins in turn
 		for(i = 0; i < 8; ++i) {
 			delay_ms(100);
-			*(portRegister) <<= 1;
+			PORTA <<= 1;
 		}
 	} 
 }
