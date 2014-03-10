@@ -18,11 +18,14 @@
 
 #define ISR_TOP		2500
 #define RED_TOP 	500
-#define LIGHT_ON_MS	100
+#define YELLOW_TOP	250
+#define MS_MAX		1000
 
 // need global variables to communicate between the ISR and the main program
-static volatile int redReadyCounter;
-static volatile short redReadyFlag;
+static volatile short redRelease_ms;
+static volatile short yellowRelease_ms;
+static volatile short releaseRedToggle;
+static volatile short releaseYellowPoll;
 
 int main() { 
 	
@@ -44,11 +47,13 @@ int main() {
 	sei();
 	
 	while (1) {
-		if (redReadyFlag) {
-			red_led(1);
-			delay_ms(LIGHT_ON_MS);
-			red_led(0);
-			redReadyFlag = 0;
+		if (releaseRedToggle) {
+			red_led(TOGGLE);
+			releaseRedToggle = 0;
+		}
+		if (releaseYellowPoll) {
+			// TODO
+			releaseYellowPoll = 0;
 		}
 	}
 }	
@@ -56,12 +61,16 @@ int main() {
 // 'ISR' special construct to create an interrupt service routine
 // 'TIMER3_COMPA_vect' is what ties this function to the Timer3 OC3A interrupt
 ISR(TIMER3_COMPA_vect) {
-	// trigger the red light
-	redReadyCounter++;
-	if (redReadyCounter > RED_TOP) {
-		redReadyFlag = 1;
-		redReadyCounter = 0;
+	
+	redRelease_ms++;
+	if (redRelease_ms >= RED_TOP) {
+		releaseRedToggle = 1;
+		redRelease_ms = 0;
+	}
+	
+	yellowRelease_ms++;
+	if (yellowRelease_ms >= YELLOW_TOP) { 
+		releaseYellowPoll = 1; 
+		yellowRelease_ms = 0;
 	}
 }
-
- 
