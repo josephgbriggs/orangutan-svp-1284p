@@ -7,7 +7,7 @@
  * the ISR, check for the release of tasks. In this case, we will blink the 
  * red LED light on the board.
  *
- * Processor runs at 20MHz -> 20,971,520 ticks / sec
+ * Processor runs at 20MHz -> 20,000,000 ticks / sec
  * 
  *      MCU CLOCK  * PRESCALER *   1/TOP    =   1000 Hz
  * 
