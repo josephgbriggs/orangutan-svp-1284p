@@ -16,7 +16,7 @@
  *       1 sec        8 ticks   2500 counts     1 sec
  */
 
-#define ISR_TOP		2500
+#define OCR_TOP		2500
 #define RED_TOP 	500
 #define YELLOW_TOP	250
 #define MS_MAX		1000
@@ -41,7 +41,7 @@ int main() {
 	TIMSK3 |= 1 << OCIE3A;
 	
 	// set the timer3 counter compare register to fire when it reaches this value
-	OCR3A = ISR_TOP;
+	OCR3A = OCR_TOP;
 	
 	// set the I-flag in the Status Register (interrupts globally enabled), 
 	sei();
