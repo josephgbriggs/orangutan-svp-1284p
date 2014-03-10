@@ -19,7 +19,6 @@
 #define OCR_TOP		2500
 #define RED_TOP 	500
 #define YELLOW_TOP	250
-#define MS_MAX		1000
 
 // need global variables to communicate between the ISR and the main program
 static volatile short redRelease_ms;
