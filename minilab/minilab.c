@@ -16,6 +16,9 @@
  *       1 sec        8 ticks   2500 counts     1 sec
  */
 
+#define RED_IO		IO_B3
+#define YELLOW_IO	IO_A3
+#define GREEN_IO	IO_A7
 #define OCR_TOP		2500
 #define RED_TOP 	500
 #define YELLOW_TOP	250
@@ -42,16 +45,20 @@ int main() {
 	// set the timer3 counter compare register to fire when it reaches this value
 	OCR3A = OCR_TOP;
 	
+	// "globally" enable all PCINT23:16
+	
 	// set the I-flag in the Status Register (interrupts globally enabled), 
 	sei();
 	
 	while (1) {
 		if (releaseRedToggle) {
-			red_led(TOGGLE);
+			set_digital_output(RED_IO, TOGGLE);
 			releaseRedToggle = 0;
 		}
 		if (releaseYellowPoll) {
-			// TODO
+			// see if the bottom button is depressed as we are polling it
+			if (get_single_debounced_button_press(BOTTOM_BUTTON))
+			set_digital_output(YELLOW_IO, TOGGLE);
 			releaseYellowPoll = 0;
 		}
 	}
@@ -68,6 +75,11 @@ ISR(TIMER3_COMPA_vect) {
 	}
 	
 	yellowRelease_ms++;
+	if (yellowRelease_ms >= YELLOW_TOP) { 
+		releaseYellowPoll = 1; 
+		yellowRelease_ms = 0;
+	}
+	
 	if (yellowRelease_ms >= YELLOW_TOP) { 
 		releaseYellowPoll = 1; 
 		yellowRelease_ms = 0;
