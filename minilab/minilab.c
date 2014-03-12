@@ -2,26 +2,34 @@
 
 /*
  * minilab: for the Orangutan SVP.
+ * Joseph G. Briggs
  *
+ * 4 Tasks: A 'Scheduler', Green LED, Yellow LED and Red LED
+ * 
+ * Scheduler	Time Triggered on Timer3, 1000 Hz
+ * Green LED	Event triggered on TOP button press, toggle LED
+ * Yellow LED	BOTTOM button Polled at 4 Hz, toggle LED if pressed
+ * Red LED		Time triggered, toggle LED at 2 Hz
+ * 
  * Set up Timer3 to generate interrupts at 1000Hz (i.e. one every 1ms). Inside
- * the ISR, check for the release of tasks. In this case, we will blink the 
- * red LED light on the board.
+ * the ISR, check for the release of tasks Yellow polling task and Red toggle
+ * task.
  *
  * Processor runs at 20MHz -> 20,000,000 ticks / sec
  * 
- *      MCU CLOCK  * PRESCALER *   1/TOP    =   1000 Hz
+ *     MCU CLOCK    * PRESCALER *    1/TOP    =   1000 Hz
  * 
- * 20,000,000 ticks   1 count      1 ISR      1000 ISRs
- * ---------------- * ------- * ----------- = --------- = 1000 Hz
- *       1 sec        8 ticks   2500 counts     1 sec
+ * 20,000,000 ticks    1 count       1 ISR      1000 ISRs
+ * ---------------- *  -------  * ----------- = --------- = 1000 Hz
+ *       1 sec         8 ticks    2500 counts     1 sec
  */
 
-#define RED_IO		IO_B3
+#define RED_IO		IO_B3	// just happen to the the port pins where LEDs are
 #define YELLOW_IO	IO_A3
 #define GREEN_IO	IO_A7
-#define OCR_TOP		2500
-#define RED_TOP 	500
-#define YELLOW_TOP	250
+#define OCR_TOP		2500  	// see calculation above, yields 1000 Hz
+#define RED_TOP 	500		// 500 ms
+#define YELLOW_TOP	250		// 240 ms
 
 // need global variables to communicate between the ISR and the main program
 static volatile short redRelease_ms;
