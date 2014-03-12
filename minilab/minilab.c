@@ -79,9 +79,4 @@ ISR(TIMER3_COMPA_vect) {
 		releaseYellowPoll = 1; 
 		yellowRelease_ms = 0;
 	}
-	
-	if (yellowRelease_ms >= YELLOW_TOP) { 
-		releaseYellowPoll = 1; 
-		yellowRelease_ms = 0;
-	}
 }
