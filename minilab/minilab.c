@@ -45,7 +45,11 @@ int main() {
 	// set the timer3 counter compare register to fire when it reaches this value
 	OCR3A = OCR_TOP;
 	
-	// "globally" enable all PCINT23:16
+	// enable interrupts on all PCINT23:16 I/O pins
+	PCICR |= 1 << PCIE2;
+	
+	// mask the interrupts on PCINT23:16 so we only have PCINT21 (TOP_BUTTON)
+	PCMSK2 |= 1 << PCINT21;
 	
 	// set the I-flag in the Status Register (interrupts globally enabled), 
 	sei();
@@ -64,19 +68,30 @@ int main() {
 	}
 }	
 	
-// 'ISR' special construct to create an interrupt service routine
+// 'ISR' special construct to create an interrupt service routines
+
 // 'TIMER3_COMPA_vect' is what ties this function to the Timer3 OC3A interrupt
 ISR(TIMER3_COMPA_vect) {
 	
 	redRelease_ms++;
 	if (redRelease_ms >= RED_TOP) {
 		releaseRedToggle = 1;
+		// reset the red timer
 		redRelease_ms = 0;
 	}
 	
 	yellowRelease_ms++;
 	if (yellowRelease_ms >= YELLOW_TOP) { 
 		releaseYellowPoll = 1; 
+		// reset the yellow polling timer
 		yellowRelease_ms = 0;
+	}
+}
+
+// Interrupt service routine for any PCINT23:16
+ISR(PCINT2_vect) {
+	// The top button must have been pushed, so toggle the portpin
+	if (button_is_pressed(TOP_BUTTON)) {
+		set_digital_output(GREEN_IO, TOGGLE);
 	}
 }
